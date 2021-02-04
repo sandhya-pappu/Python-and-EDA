@@ -1,0 +1,59 @@
+# Importing all the necessary libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Reading dataset
+df=pd.read_csv("application_data.csv")
+
+# shape of the datset
+df.shape
+
+# Cleaning up the missing data
+
+# listing the columns which are having more than 30% null values
+
+emptycol=df.isnull().sum()
+emptycol=emptycol[emptycol.values>(0.3*len(emptycol))]
+len(emptycol)
+
+##Analysis -1 : Apparently, there are 64 columns which are having more than 30% null values in the dataset
+
+# Removing those 64 columns
+emptycol = list(emptycol[emptycol.values>=0.3].index)
+df.drop(labels=emptycol,axis=1,inplace=True)
+print(len(emptycol))
+
+# Checking the columns having lesser null percentage
+df.isnull().sum()/len(df)*100
+
+## Analysis : 2 'AMT_ANNUITY' columns is having very few null values rows. Hence let's try to impute the missing values
+##Because this column is having an outlier which is very large, it will be inappropriate to fill those missing values with mean, Hence we will use Median for this and we will fill those missing banks with median value
+
+# Filling missing values with median
+
+values=df['AMT_ANNUITY'].median()
+df.loc[df['AMT_ANNUITY'].isnull(),'AMT_ANNUITY']=values
+
+# Removing rows having null values greater than or equal to 30%
+emptyrow=df.isnull().sum(axis=1)
+emptyrow=list(emptyrow[emptyrow.values>=0.3*len(df)].index)
+df.drop(labels=emptyrow,axis=0,inplace=True)
+print(len(emptyrow))
+
+# Removing unwanted columns from this dataset
+unwanted=['FLAG_MOBIL', 'FLAG_EMP_PHONE', 'FLAG_WORK_PHONE', 'FLAG_CONT_MOBILE',
+       'FLAG_PHONE', 'FLAG_EMAIL','REGION_RATING_CLIENT','REGION_RATING_CLIENT_W_CITY','FLAG_EMAIL','CNT_FAM_MEMBERS', 'REGION_RATING_CLIENT',
+       'REGION_RATING_CLIENT_W_CITY','DAYS_LAST_PHONE_CHANGE', 'FLAG_DOCUMENT_2', 'FLAG_DOCUMENT_3','FLAG_DOCUMENT_4', 'FLAG_DOCUMENT_5', 'FLAG_DOCUMENT_6',
+       'FLAG_DOCUMENT_7', 'FLAG_DOCUMENT_8', 'FLAG_DOCUMENT_9','FLAG_DOCUMENT_10', 'FLAG_DOCUMENT_11', 'FLAG_DOCUMENT_12',
+       'FLAG_DOCUMENT_13', 'FLAG_DOCUMENT_14', 'FLAG_DOCUMENT_15','FLAG_DOCUMENT_16', 'FLAG_DOCUMENT_17', 'FLAG_DOCUMENT_18',
+       'FLAG_DOCUMENT_19', 'FLAG_DOCUMENT_20', 'FLAG_DOCUMENT_21']
+
+df.drop(labels=unwanted,axis=1,inplace=True)
+
+# Finding the categorical columns having these 'XNA' values
+    
+# For Gender column
+
+df[df['CODE_GENDER']=='XNA'].shape
