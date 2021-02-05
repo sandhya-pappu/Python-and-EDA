@@ -54,6 +54,27 @@ df.drop(labels=unwanted,axis=1,inplace=True)
 
 # Finding the categorical columns having these 'XNA' values
     
-# For Gender column
+       # For Gender column
+       df[df['CODE_GENDER']=='XNA'].shape
 
-df[df['CODE_GENDER']=='XNA'].shape
+       # For Organization column
+       df[df['ORGANIZATION_TYPE']=='XNA'].shape
+       
+       # Describing the Gender column to check the number of females and males
+       df['CODE_GENDER'].value_counts()
+
+##Observations - Since, Female is having the majority and only 4 rows are having XNA values, we can update those columns with Gender 'F' as there should not be any impact on the dataset.
+
+# Updating the column 'CODE_GENDER' with "F" for the dataset
+df.loc[df['CODE_GENDER']=='XNA','CODE_GENDER']='F'
+df['CODE_GENDER'].value_counts()
+
+# Describing the organization type column
+df['ORGANIZATION_TYPE'].describe()
+
+##Observations - So, for column 'ORGANIZATION_TYPE', we have total count of 307511 rows of which 55374 rows are having 'XNA' values. Which means 18% of the column is having this values. 
+       ##Hence if we drop the rows of total 55374, should not have any major impact on our dataset.
+# Hence, dropping the rows of total 55374 have 'XNA' values in the organization type column
+df=df.drop(df.loc[df['ORGANIZATION_TYPE']=='XNA'].index)
+df[df['ORGANIZATION_TYPE']=='XNA'].shape
+
