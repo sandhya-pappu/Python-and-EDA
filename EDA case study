@@ -78,3 +78,35 @@ df['ORGANIZATION_TYPE'].describe()
 df=df.drop(df.loc[df['ORGANIZATION_TYPE']=='XNA'].index)
 df[df['ORGANIZATION_TYPE']=='XNA'].shape
 
+# Converting all variables into numeric in the dataset
+numeric_columns=['TARGET','CNT_CHILDREN','AMT_INCOME_TOTAL','AMT_CREDIT','AMT_ANNUITY','REGION_POPULATION_RELATIVE','DAYS_BIRTH',
+                'DAYS_EMPLOYED','DAYS_REGISTRATION','DAYS_ID_PUBLISH','HOUR_APPR_PROCESS_START','LIVE_REGION_NOT_WORK_REGION', 'REG_CITY_NOT_LIVE_CITY',
+       'REG_CITY_NOT_WORK_CITY', 'LIVE_CITY_NOT_WORK_CITY']
+
+df[numeric_columns]=df[numeric_columns].apply(pd.to_numeric)
+df.head(5)
+
+# Creating bins for income amount
+       bins = [0,25000,50000,75000,100000,125000,150000,175000,200000,225000,250000,275000,300000,325000,350000,375000,400000,425000,450000,475000,500000,10000000000]
+       slot = ['0-25000', '25000-50000','50000-75000','75000,100000','100000-125000', '125000-150000', '150000-175000','175000-200000',
+              '200000-225000','225000-250000','250000-275000','275000-300000','300000-325000','325000-350000','350000-375000',
+              '375000-400000','400000-425000','425000-450000','450000-475000','475000-500000','500000 and above']
+
+       df['AMT_INCOME_RANGE']=pd.cut(df['AMT_INCOME_TOTAL'],bins,labels=slot)
+
+# Creating bins for Credit amount
+       bins = [0,150000,200000,250000,300000,350000,400000,450000,500000,550000,600000,650000,700000,750000,800000,850000,900000,1000000000]
+       slots = ['0-150000', '150000-200000','200000-250000', '250000-300000', '300000-350000', '350000-400000','400000-450000',
+               '450000-500000','500000-550000','550000-600000','600000-650000','650000-700000','700000-750000','750000-800000',
+               '800000-850000','850000-900000','900000 and above']
+
+       df['AMT_CREDIT_RANGE']=pd.cut(df['AMT_CREDIT'],bins=bins,labels=slots)
+
+# Dividing the dataset into two dataset of  target=1(client with payment difficulties) and target=0(client without payment difficulties)
+       target0_df=df.loc[df["TARGET"]==0]
+       target1_df=df.loc[df["TARGET"]==1]
+
+# Calculating Imbalance percentage
+   round(len(target0_df)/len(target1_df),2)
+
+       ##Observation: The Imbalance ratio is 10.55
