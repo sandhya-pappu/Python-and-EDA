@@ -110,3 +110,113 @@ df.head(5)
    round(len(target0_df)/len(target1_df),2)
 
        ##Observation: The Imbalance ratio is 10.55
+       
+#Univariate analysis for categories
+# Count plotting in logarithmic scale
+
+def uniplot(df,col,title,hue =None):
+    
+    sns.set_style('whitegrid')
+    sns.set_context('talk')
+    plt.rcParams["axes.labelsize"] = 20
+    plt.rcParams['axes.titlesize'] = 22
+    plt.rcParams['axes.titlepad'] = 30
+    
+    
+    temp = pd.Series(data = hue)
+    fig, ax = plt.subplots()
+    width = len(df[col].unique()) + 7 + 4*len(temp.unique())
+    fig.set_size_inches(width , 8)
+    plt.xticks(rotation=45)
+    plt.yscale('log')
+    plt.title(title)
+    ax = sns.countplot(data = df, x= col, order=df[col].value_counts().index,hue = hue,palette='magma') 
+        
+    plt.show()
+    
+# PLotting for income range
+
+uniplot(target0_df,col='AMT_INCOME_RANGE',title='Distribution of income range',hue='CODE_GENDER')
+       ##inference to be derived from the above graph.
+              #Female counts are higher than male.
+              #Income range from 100000 to 200000 is having more number of credits.
+              #This graph shows that number of females is higher than males in having credits for that range.
+              #Count for income range 400000 and above is very less.   
+
+# Plotting for Income type
+uniplot(target0_df,col='NAME_INCOME_TYPE',title='Distribution of Income type',hue='CODE_GENDER')              
+
+# Plotting for Contract type
+uniplot(target0_df,col='NAME_CONTRACT_TYPE',title='Distribution of contract type',hue='CODE_GENDER')
+
+# Plotting for Organization type in logarithmic scale
+sns.set_style('whitegrid')
+sns.set_context('talk')
+plt.figure(figsize=(15,30))
+plt.rcParams["axes.labelsize"] = 20
+plt.rcParams['axes.titlesize'] = 22
+plt.rcParams['axes.titlepad'] = 30
+
+plt.title("Distribution of Organization type for target - 0")
+
+plt.xticks(rotation=90)
+plt.xscale('log')
+
+sns.countplot(data=target0_df,y='ORGANIZATION_TYPE',order=target0_df['ORGANIZATION_TYPE'].value_counts().index,palette='cool')
+
+plt.show()
+
+       ## Categoroical Univariate Analysis in logarithmic scale for target=1(client with payment difficulties)
+# Plotting for income range
+uniplot(target1_df,col='AMT_INCOME_RANGE',title='Distribution of income range',hue='CODE_GENDER')
+
+# Plotting for Income type
+uniplot(target1_df,col='NAME_INCOME_TYPE',title='Distribution of Income type',hue='CODE_GENDER')
+
+# Plotting for Contract type
+uniplot(target1_df,col='NAME_CONTRACT_TYPE',title='Distribution of contract type',hue='CODE_GENDER')
+
+# Plotting for Organization type
+
+sns.set_style('whitegrid')
+sns.set_context('talk')
+plt.figure(figsize=(15,30))
+plt.rcParams["axes.labelsize"] = 20
+plt.rcParams['axes.titlesize'] = 22
+plt.rcParams['axes.titlepad'] = 30
+
+plt.title("Distribution of Organization type for target - 1")
+
+plt.xticks(rotation=90)
+plt.xscale('log')
+
+sns.countplot(data=target0_df,y='ORGANIZATION_TYPE',order=target0_df['ORGANIZATION_TYPE'].value_counts().index,palette='cool')
+
+plt.show()
+
+       ## Finding some correlation for numerical columns for both target 0 and 1 
+target0_corr=target0_df.iloc[0:,2:]
+target1_corr=target1_df.iloc[0:,2:]
+
+target0=target0_corr.corr(method='spearman')
+target1=target1_corr.corr(method='spearman')
+
+       ## Now, plotting the above correlation with heat map for better visulaization
+# figure size
+
+def targets_corr(data,title):
+    plt.figure(figsize=(15, 10))
+    plt.rcParams['axes.titlesize'] = 25
+    plt.rcParams['axes.titlepad'] = 70
+
+# heatmap with a color map of choice
+    sns.heatmap(data, cmap="RdYlGn",annot=False)
+    plt.title(title)
+    plt.yticks(rotation=0)
+    plt.show()
+    
+ # For Target 0
+ targets_corr(data=target0,title='Correlation for target 0')
+ 
+ # For Target 1
+targets_corr(data=target1,title='Correlation for target 1')
